@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.design.covid9server.mapper.WatchL1Mapper" >
+  <resultMap id="BaseResultMap" type="com.design.covid9server.entity.WatchL1" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="patient_id" property="patientId" jdbcType="INTEGER" />
+    <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+    <result column="test_1_date" property="test1Date" jdbcType="TIMESTAMP" />
+    <result column="test_1_result" property="test1Result" jdbcType="VARCHAR" />
+    <result column="test_2_date" property="test2Date" jdbcType="TIMESTAMP" />
+    <result column="test_2_result" property="test2Result" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, patient_id, start_date, test_1_date, test_1_result, test_2_date, test_2_result, 
+    address
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from watch_l1
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPatientId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from watch_l1
+    where patient_id = #{patientId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from watch_l1
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.design.covid9server.entity.WatchL1" >
+    insert into watch_l1 (id, patient_id, start_date, 
+      test_1_date, test_1_result, test_2_date, 
+      test_2_result, address)
+    values (#{id,jdbcType=INTEGER}, #{patientId,jdbcType=INTEGER}, #{startDate,jdbcType=TIMESTAMP}, 
+      #{test1Date,jdbcType=TIMESTAMP}, #{test1Result,jdbcType=VARCHAR}, #{test2Date,jdbcType=TIMESTAMP}, 
+      #{test2Result,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.design.covid9server.entity.WatchL1" >
+    update watch_l1
+    <set >
+      <if test="patientId != null" >
+        patient_id = #{patientId,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null" >
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="test1Date != null" >
+        test_1_date = #{test1Date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="test1Result != null" >
+        test_1_result = #{test1Result,jdbcType=VARCHAR},
+      </if>
+      <if test="test2Date != null" >
+        test_2_date = #{test2Date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="test2Result != null" >
+        test_2_result = #{test2Result,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

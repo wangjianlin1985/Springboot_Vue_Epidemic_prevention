@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.design.covid9server.mapper.PatientL3Mapper" >
+  <resultMap id="BaseResultMap" type="com.design.covid9server.entity.PatientL3" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="gender" property="gender" jdbcType="VARCHAR" />
+    <result column="idcard_no" property="idcardNo" jdbcType="VARCHAR" />
+    <result column="route" property="route" jdbcType="VARCHAR" />
+    <result column="traffic" property="traffic" jdbcType="VARCHAR" />
+    <result column="contact" property="contact" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, age, gender, idcard_no, route, traffic, contact, address, start_date
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from patient_l3
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectPatientL3ByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from patient_l3
+    order by id DESC
+    limit ${start},${pageSize}
+  </select>
+
+  <select id="selectPatientL3CountAll" parameterType="com.design.covid9server.entity.PatientL3" resultType="java.lang.Long">
+    SELECT
+      COUNT(*)
+    FROM
+      patient_l3
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from patient_l3
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.design.covid9server.entity.PatientL3" >
+    insert into patient_l3 (id, name, age, 
+      gender, idcard_no, route, 
+      traffic, contact, address, 
+      start_date)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, 
+      #{gender,jdbcType=VARCHAR}, #{idcardNo,jdbcType=VARCHAR}, #{route,jdbcType=VARCHAR}, 
+      #{traffic,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{startDate,jdbcType=TIMESTAMP})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.design.covid9server.entity.PatientL3" >
+    update patient_l3
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardNo != null" >
+        idcard_no = #{idcardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="route != null" >
+        route = #{route,jdbcType=VARCHAR},
+      </if>
+      <if test="traffic != null" >
+        traffic = #{traffic,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null" >
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectCountByGender" resultType="com.design.covid9server.dto.PatientL2Dto">
+    SELECT
+      COUNT(*) AS count,
+    CASE gender WHEN 'male' THEN '男' WHEN 'female' THEN '女' END AS gender
+    FROM
+        patient_l3
+    group by
+        gender
+  </select>
+
+  <select id="selectCountByAge" resultType="com.design.covid9server.dto.PatientL2Dto">
+    SELECT
+        (SELECT COUNT(*) FROM patient_l3 WHERE age &gt;= 0 and age &lt; 20) AS age0020,
+        (SELECT COUNT(*) FROM patient_l3 WHERE age &gt;= 20 and age &lt; 40) AS age2040,
+        (SELECT COUNT(*) FROM patient_l3 WHERE age &gt;= 40 and age &lt; 60) AS age4060,
+        (SELECT COUNT(*) FROM patient_l3 WHERE age &gt;= 60 and age &lt; 80) AS age6080,
+        (SELECT COUNT(*) FROM patient_l3 WHERE age &gt;= 80 and age &lt; 150) AS age80150
+  </select>
+
+</mapper>

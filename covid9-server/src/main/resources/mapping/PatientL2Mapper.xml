@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.design.covid9server.mapper.PatientL2Mapper" >
+  <resultMap id="BaseResultMap" type="com.design.covid9server.entity.PatientL2" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="idcard_no" property="idcardNo" jdbcType="VARCHAR" />
+    <result column="hot_cough" property="hotCough" jdbcType="VARCHAR" />
+    <result column="from_city" property="fromCity" jdbcType="VARCHAR" />
+    <result column="setout_date" property="setoutDate" jdbcType="TIMESTAMP" />
+    <result column="traffic_type" property="trafficType" jdbcType="INTEGER" />
+    <result column="traffic_no" property="trafficNo" jdbcType="VARCHAR" />
+    <result column="sit_no" property="sitNo" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, gender, age, idcard_no, hot_cough, from_city, setout_date, traffic_type, 
+    traffic_no, sit_no, status
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from patient_l2
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectPatientL2ByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from patient_l2
+    order by id DESC
+    limit ${start},${pageSize}
+  </select>
+
+  <select id="selectPatientL2CountAll" parameterType="com.design.covid9server.entity.PatientL2" resultType="java.lang.Long">
+    SELECT
+      COUNT(*)
+    FROM
+      patient_l2
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from patient_l2
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.design.covid9server.entity.PatientL2" >
+    insert into patient_l2 (id, name, gender, 
+      age, idcard_no, hot_cough, 
+      from_city, setout_date, traffic_type, 
+      traffic_no, sit_no, status
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, 
+      #{age,jdbcType=INTEGER}, #{idcardNo,jdbcType=VARCHAR}, #{hotCough,jdbcType=VARCHAR}, 
+      #{fromCity,jdbcType=VARCHAR}, #{setoutDate,jdbcType=TIMESTAMP}, #{trafficType,jdbcType=INTEGER}, 
+      #{trafficNo,jdbcType=VARCHAR}, #{sitNo,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.design.covid9server.entity.PatientL2" >
+    update patient_l2
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="idcardNo != null" >
+        idcard_no = #{idcardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="hotCough != null" >
+        hot_cough = #{hotCough,jdbcType=VARCHAR},
+      </if>
+      <if test="fromCity != null" >
+        from_city = #{fromCity,jdbcType=VARCHAR},
+      </if>
+      <if test="setoutDate != null" >
+        setout_date = #{setoutDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="trafficType != null" >
+        traffic_type = #{trafficType,jdbcType=INTEGER},
+      </if>
+      <if test="trafficNo != null" >
+        traffic_no = #{trafficNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sitNo != null" >
+        sit_no = #{sitNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectCountByFromCity" resultType="com.design.covid9server.dto.PatientL2Dto">
+    SELECT
+      COUNT(*) AS count,
+        from_city AS fromCity
+    FROM
+      patient_l2
+    group by
+      from_city;
+  </select>
+
+  <select id="selectCountByGender" resultType="com.design.covid9server.dto.PatientL2Dto">
+    SELECT
+      COUNT(*) AS count,
+    CASE gender WHEN 'male' THEN '男' WHEN 'female' THEN '女' END AS gender
+    FROM
+        patient_l2
+    group by
+        gender
+  </select>
+
+  <select id="selectCountByAge" resultType="com.design.covid9server.dto.PatientL2Dto">
+    SELECT
+        (SELECT COUNT(*) FROM patient_l2 WHERE age &gt;= 0 and age &lt; 20) AS age0020,
+        (SELECT COUNT(*) FROM patient_l2 WHERE age &gt;= 20 and age &lt; 40) AS age2040,
+        (SELECT COUNT(*) FROM patient_l2 WHERE age &gt;= 40 and age &lt; 60) AS age4060,
+        (SELECT COUNT(*) FROM patient_l2 WHERE age &gt;= 60 and age &lt; 80) AS age6080,
+        (SELECT COUNT(*) FROM patient_l2 WHERE age &gt;= 80 and age &lt; 150) AS age80150
+  </select>
+
+</mapper>

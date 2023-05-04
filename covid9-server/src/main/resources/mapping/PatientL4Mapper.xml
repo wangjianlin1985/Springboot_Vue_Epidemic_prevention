@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.design.covid9server.mapper.PatientL4Mapper" >
+  <resultMap id="BaseResultMap" type="com.design.covid9server.entity.PatientL4" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="gender" property="gender" jdbcType="VARCHAR" />
+    <result column="idcard_no" property="idcardNo" jdbcType="VARCHAR" />
+    <result column="health_code" property="healthCode" jdbcType="VARCHAR" />
+    <result column="traffic_type" property="trafficType" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, age, gender, idcard_no, health_code, traffic_type, address
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from patient_l4
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectPatientL4ByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from patient_l4
+    order by id DESC
+    limit ${start},${pageSize}
+  </select>
+
+  <select id="selectPatientL4CountAll" resultType="java.lang.Long">
+    SELECT
+      COUNT(*)
+    FROM
+      patient_l4
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from patient_l4
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.design.covid9server.entity.PatientL4" >
+    insert into patient_l4 (id, name, age, 
+      gender, idcard_no, health_code, 
+      traffic_type, address)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, 
+      #{gender,jdbcType=VARCHAR}, #{idcardNo,jdbcType=VARCHAR}, #{healthCode,jdbcType=VARCHAR}, 
+      #{trafficType,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.design.covid9server.entity.PatientL4" >
+    update patient_l4
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardNo != null" >
+        idcard_no = #{idcardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="healthCode != null" >
+        health_code = #{healthCode,jdbcType=VARCHAR},
+      </if>
+      <if test="trafficType != null" >
+        traffic_type = #{trafficType,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>
